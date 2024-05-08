@@ -8,10 +8,7 @@ const App = () => {
   return (
       <div>
         {/*<Characters/>*/}
-
-            <Recipes/>
-
-
+        <Recipes/>
       </div>
   );
 };
