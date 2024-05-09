@@ -1,11 +1,16 @@
 import './App.css';
-
 import React from 'react';
+import { UsersComponent } from './components/UsersComponent';
 
 const App = () => {
+    const lift = (user: any) => {
+        console.log(user);
+    };
+
   return (
       <div>
-        App
+          <UsersComponent liftProp={lift}/>
+          <hr/>
       </div>
   );
 };
