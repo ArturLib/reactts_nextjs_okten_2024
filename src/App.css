@@ -1,0 +1,12 @@
+.main_style {
+    display: flex;
+    justify-content: center;
+}
+
+.users_style {
+    width: 25%;
+}
+
+.posts_style {
+    width: 70%;
+}
