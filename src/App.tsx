@@ -1,42 +1,33 @@
 import './App.css';
 
-import React, {useState} from 'react';
+import React, {useReducer, useState} from 'react';
 
 interface IState {
     value: number
 }
 
+function reducer(state: IState, action: {type: string, payload: number}) {
+    
+}
+// state: IState - це початкове значення яке ми вказуємо в useReducer (а саме - {value: 0})
+
 const App = () => {
 
-    const [counter, setCounter] = useState<IState>({value: 0})
+    const [counter, dispatch] = useReducer<any>(reducer, {value: 0})
+    // counter по замовчуванню буде дорівнювати {value: 0} він жеж і є state: IState (з 9 строки ф-ція reducer)
+    // dispatch виконує функцію setState з useState
 
     const increment = () => {
-        // ПЕРШИЙ ВАРІАНТ (не по важливості):
-        // setCounter({value: counter.value + 1});
-            // Тут ми значення перепризначаємо {value: counter.value + 1}.
-            // {value: counter.value + 1} - такий запис тому, що в нас параметризація через інтерфейс IState
-
-        // ДРУГИЙ ВАРІАНТ (не по важливості):
-        // Якщо ми працюємо з примітивними типами, то
-        // counter.value = 100500;
-            // тут ми в лоб визначили чому дорівнює значення
-        // setCounter({...counter})
-            // обовʼязково потрібна деструктуризація counter для того, щоб setCounter міг
-            // працювати, по іншому він буде ТІЛЬКИ присвоювати 100500 для counter
-
-        // ТРЕТІЙ ВАРІАНТ (не по важливості):
-        setCounter(prevState => ({value: prevState.value + 1}))
-
-    // ПІДСУМОК: Якщо потрібно впровадити значення на щось конкретне, то використовуємо setCounter і присвоюємо конкретне
-    // значення. Якщо значення потрібно постійно оновлювати, то найкраще передавати через кол-бек ф-цію (3 варіант)
+        dispatch({type: 'inc', payload: 1})
+        // dispatch({}) - сюди приходить значення action: {type: string, payload: number} з 9 строки
     };
 
     const decrement = () => {
-        setCounter(prevState => ({value: prevState.value - 1}))
+
     };
 
     const reset = () => {
-        setCounter({value: 0})
+
     };
 
     return (
