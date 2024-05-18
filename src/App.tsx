@@ -1,41 +1,41 @@
 import './App.css';
 
-import React, {useReducer, useState} from 'react';
+import React, {useReducer} from 'react';
 
-interface IState {
-    value: number
+interface CounterState {
+    count: number
 }
 
-function reducer(state: IState, action: {type: string, payload: number}) {
-    
+interface CounterAction {
+    type: string,
+    payload: number
 }
-// state: IState - це початкове значення яке ми вказуємо в useReducer (а саме - {value: 0})
+
+const callbackReducer = (state: CounterState, action: CounterAction): CounterState => {
+    switch (action.type) {
+        case 'inc':
+            state.count += action.payload;
+            return {...state}
+        case 'dec':
+            state.count -= action.payload;
+            return {...state}
+        case 'res':
+            state.count = action.payload;
+            return {...state}
+    }
+    return {count: -100500};
+};
 
 const App = () => {
 
-    const [counter, dispatch] = useReducer<any>(reducer, {value: 0})
-    // counter по замовчуванню буде дорівнювати {value: 0} він жеж і є state: IState (з 9 строки ф-ція reducer)
-    // dispatch виконує функцію setState з useState
-
-    const increment = () => {
-        dispatch({type: 'inc', payload: 1})
-        // dispatch({}) - сюди приходить значення action: {type: string, payload: number} з 9 строки
-    };
-
-    const decrement = () => {
-
-    };
-
-    const reset = () => {
-
-    };
+    const [state, dispatch] = useReducer(callbackReducer, {count: 0})
 
     return (
       <div>
-          <h2>{counter.value}</h2>
-          <button onClick={increment}>increment</button>
-          <button onClick={decrement}>decrement</button>
-          <button onClick={reset}>reset</button>
+          <h2>{state.count}</h2>
+          <button onClick={() => {dispatch({type: 'inc', payload: 100})}}>inc</button>
+          <button onClick={() => {dispatch({type: 'dec', payload: 200})}}>dec</button>
+          <button onClick={() => {dispatch({type: 'res', payload: -278562976})}}>res</button>
       </div>
   );
 };
