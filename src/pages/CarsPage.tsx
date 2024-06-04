@@ -1,15 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {carService} from "../services/api.service";
+import {authService, carService} from "../services/api.service";
 import {CarsComponent} from "../components/CarsComponent";
 import {ICarPaginatedModel} from "../models/ICarPaginatedModel";
 import {PaginationComponent} from "../components/PaginationComponent";
-import {useSearchParams} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
+import {AxiosError} from "axios";
 
 const CarsPage = () => {
 
+    const navigate = useNavigate();
     const [query, setQuery] = useSearchParams();
-
-    const [carsPaginatedObj, setCarsPaginatedObj] = useState<ICarPaginatedModel>({
+    const [carsPaginatedObj, setCarsPaginatedObj] =
+        useState<ICarPaginatedModel>({
         items: [],
         next: null,
         prev: null,
@@ -18,11 +20,29 @@ const CarsPage = () => {
     });
 
     useEffect(() => {
-        carService.getAllCars(query.get('page') || '1').then(value => {
-            if (value) {
-                setCarsPaginatedObj(value)
+        const getCarsData = async () => {
+            try {
+                const response = await carService.getAllCars(query.get('page') || '1');
+                if (response) {
+                    setCarsPaginatedObj(response);
+                }
+            } catch (e) {
+                const axiosError = e as AxiosError;
+                if (axiosError && axiosError?.response?.status === 401) {
+                    try {
+                        await authService.refresh();
+                    } catch (e) {
+                        return navigate('/')
+                    }
+                    const response = await carService.getAllCars(query.get('page') || '1');
+                    if (response) {
+                        setCarsPaginatedObj(response
+                        )
+                    }
+                }
             }
-        });
+        }
+        getCarsData();
     }, [query]);
 
     const changePage = (action: string) => {

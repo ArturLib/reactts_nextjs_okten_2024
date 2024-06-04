@@ -5,7 +5,6 @@ const retriveLocalStorageData = <T, > (key: string) => {
     if (!pairJSON) {
         return {} as T;
     }
-
     return pair as T;
 };
 

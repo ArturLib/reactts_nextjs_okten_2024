@@ -14,7 +14,7 @@ const PaginationComponent: FC<IProps> = ({changePage, prev, next}) => {
                 changePage('prev')
             }}
             disabled={!prev}
-            >prev</button>
+            >prev</button>;
             <button onClick={() => {
                 changePage('next')
             }}

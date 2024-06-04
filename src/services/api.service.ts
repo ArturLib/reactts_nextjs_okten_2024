@@ -1,4 +1,4 @@
-import axios, {AxiosError} from "axios";
+import axios from "axios";
 import {AuthDataModel} from "../models/AuthDataModel";
 import {ITokenObtainPair} from "../models/ITokenObtainPair";
 import {retriveLocalStorageData} from "./helpers/helpers";
@@ -19,36 +19,21 @@ axiosInstance.interceptors.request.use(request => {
 
 const authService = {
     authentication: async (authData: AuthDataModel): Promise<boolean> => {
-
-        let response;
-        try {
-            response = await axiosInstance.post<ITokenObtainPair>('/auth', authData);
-            localStorage.setItem('tokenPair', JSON.stringify(response.data));
-        } catch (e) {
-            console.log(e);
-        }
+        const response = await axiosInstance.post<ITokenObtainPair>('/auth', authData);
+        localStorage.setItem('tokenPair', JSON.stringify(response.data));
         return !!(response?.data?.access && response?.data?.refresh);
     },
-    refresh: async (refreshToken: string) => {
+    refresh: async () => {
+        const refreshToken = retriveLocalStorageData<ITokenObtainPair>('tokenPair').refresh;
         const response = await axiosInstance.post<ITokenObtainPair>('/auth/refresh',  {refresh: refreshToken});
         localStorage.setItem('tokenPair', JSON.stringify(response.data));
     }
 };
 
 const carService = {
-    getAllCars: async (page: string) => {
-
-        try {
-            const response = await axiosInstance.get<ICarPaginatedModel>('/cars', {params: {page: page}});
-            return response.data
-        } catch (e) {
-            const axoisError = e as AxiosError;
-            if (axoisError?.response?.status === 401) {
-                const refreshToken = retriveLocalStorageData<ITokenObtainPair>('tokenPair').refresh;
-                await authService.refresh(refreshToken);
-                await carService.getAllCars(page);
-            }
-        }
+    getAllCars: async (page: string = '1'):Promise<ICarPaginatedModel | null> => {
+        const response = await axiosInstance.get<ICarPaginatedModel>('/cars', {params: {page: page}});
+        return response.data;
     }
 };
 
