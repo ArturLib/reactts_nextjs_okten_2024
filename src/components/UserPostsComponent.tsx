@@ -1,10 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useContextProvider} from "../context/ContextProvider";
 import {UserWithPostsType} from "../models/UserWithPostsType";
+import {useStore} from "../context/ContextProvider";
 
 const UserPostsComponent = () => {
 
-    const {userStore: {allUsers}, postStore: {allPosts}} = useContextProvider();
+    const {userStore: {allUsers}, postStore: {allPosts}} = useStore();
     const [usersWithPostsState, setUsersWithPostsState] = useState<UserWithPostsType[]>([]);
 
     const userWithPostsArray = useMemo(() => {
